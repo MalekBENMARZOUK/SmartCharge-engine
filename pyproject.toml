@@ -1,0 +1,112 @@
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "smart-charging-optimization-engine"
+version = "0.1.0"
+description = "EV fleet charging optimization engine with day-ahead planning, telemetry-driven re-optimization, multisite coordination, and a FastAPI and CLI surface."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+keywords = ["ev-charging", "fleet-optimization", "smart-charging", "vehicle-to-grid", "operations-research", "ortools"]
+authors = [
+  { name = "Malek Benmarzouk" }
+]
+maintainers = [
+  { name = "Malek Benmarzouk" }
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Framework :: FastAPI",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Office/Business :: Scheduling",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+dependencies = [
+  "aio-pika>=9.5.5,<10.0.0",
+  "alembic>=1.15.0,<2.0.0",
+  "fastapi>=0.116.0,<1.0.0",
+  "ortools>=9.12.0,<10.0.0",
+  "plotly>=6.0.0,<7.0.0",
+  "pydantic>=2.11.0,<3.0.0",
+  "pydantic-settings>=2.8.0,<3.0.0",
+  "rich>=14.0.0,<15.0.0",
+  "sqlalchemy>=2.0.39,<3.0.0",
+  "typing-extensions>=4.14.0,<5.0.0",
+  "typer>=0.16.0,<1.0.0",
+  "uvicorn[standard]>=0.35.0,<1.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine"
+Documentation = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine#readme"
+Repository = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine"
+Issues = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine/issues"
+Source = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine"
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.28.0,<1.0.0",
+  "mypy>=1.17.0,<2.0.0",
+  "pyright[nodejs]>=1.1.400,<2.0.0",
+  "pytest>=8.4.0,<9.0.0",
+  "pytest-cov>=6.2.0,<7.0.0",
+  "ruff>=0.12.0,<1.0.0"
+]
+
+[project.scripts]
+sce = "smart_charging_optimization_engine.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/smart_charging_optimization_engine"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "--cov=smart_charging_optimization_engine --cov-report=term-missing"
+filterwarnings = [
+  "ignore:builtin type Swig.*:DeprecationWarning",
+  "ignore:builtin type swigvarlink.*:DeprecationWarning",
+  "ignore:unclosed database:ResourceWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "benchmarks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "SIM", "S", "RUF", "C4", "PIE", "PT", "TCH"]
+
+[tool.ruff.lint.flake8-type-checking]
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+python_version = "3.11"
+packages = ["smart_charging_optimization_engine"]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["aio_pika.*", "ortools.*", "plotly.*"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["smart_charging_optimization_engine"]
+branch = true

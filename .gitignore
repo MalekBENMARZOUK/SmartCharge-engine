@@ -1,0 +1,32 @@
+# Virtual environments
+.venv/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Linters & type checkers
+.mypy_cache/
+.ruff_cache/
+.pyright/
+
+# Runtime artifacts
+artifacts/
+*.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
