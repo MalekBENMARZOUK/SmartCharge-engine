@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "scenario_name": "test_small_fleet",
+    "description": "Compact deterministic scenario for automated tests."
+  },
+  "site": {
+    "site_id": "depot-a",
+    "time_step_minutes": 30,
+    "horizon_slots": 8,
+    "power_limit_kw": [120, 120, 120, 120, 120, 120, 120, 120],
+    "electricity_price_per_kwh": [0.10, 0.10, 0.12, 0.12, 0.18, 0.18, 0.11, 0.11]
+  },
+  "chargers": [
+    {"charger_id": "C1", "site_id": "depot-a", "max_power_kw": 60, "efficiency": 0.95},
+    {"charger_id": "C2", "site_id": "depot-a", "max_power_kw": 60, "efficiency": 0.95}
+  ],
+  "vehicles": [
+    {
+      "vehicle_id": "BUS-1",
+      "battery_capacity_kwh": 300,
+      "initial_energy_kwh": 120,
+      "target_energy_kwh": 180,
+      "minimum_energy_kwh": 90,
+      "max_charging_power_kw": 60,
+      "availability_windows": [{"start_slot": 0, "end_slot": 4}],
+      "departure_slot": 4,
+      "priority": "critical",
+      "compatible_charger_ids": ["C1"]
+    },
+    {
+      "vehicle_id": "TRUCK-1",
+      "battery_capacity_kwh": 350,
+      "initial_energy_kwh": 140,
+      "target_energy_kwh": 200,
+      "minimum_energy_kwh": 100,
+      "max_charging_power_kw": 60,
+      "availability_windows": [{"start_slot": 2, "end_slot": 8}],
+      "departure_slot": 8,
+      "priority": "high"
+    }
+  ],
+  "objective": {
+    "unmet_demand_penalty_per_kwh": 200,
+    "load_smoothing_penalty_per_kw_change": 0.1,
+    "site_demand_charge_per_kw": 0.25
+  }
+}

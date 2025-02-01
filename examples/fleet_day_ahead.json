@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "scenario_name": "fleet_day_ahead_baseline",
+    "description": "Representative mixed fleet depot charging plan over 24 hours."
+  },
+  "site": {
+    "time_step_minutes": 15,
+    "horizon_slots": 24,
+    "power_limit_kw": [450, 450, 450, 450, 450, 450, 420, 420, 420, 420, 420, 420, 500, 500, 500, 500, 500, 500, 380, 380, 380, 380, 430, 430],
+    "electricity_price_per_kwh": [0.12, 0.12, 0.11, 0.11, 0.11, 0.13, 0.18, 0.18, 0.19, 0.19, 0.18, 0.17, 0.15, 0.14, 0.14, 0.15, 0.16, 0.17, 0.21, 0.22, 0.22, 0.18, 0.15, 0.13]
+  },
+  "chargers": [
+    {"charger_id": "DC-01", "max_power_kw": 150, "efficiency": 0.95},
+    {"charger_id": "DC-02", "max_power_kw": 150, "efficiency": 0.95},
+    {"charger_id": "DC-03", "max_power_kw": 120, "efficiency": 0.94},
+    {"charger_id": "DC-04", "max_power_kw": 120, "efficiency": 0.94}
+  ],
+  "vehicles": [
+    {
+      "vehicle_id": "BUS-101",
+      "battery_capacity_kwh": 420,
+      "initial_energy_kwh": 120,
+      "target_energy_kwh": 330,
+      "minimum_energy_kwh": 80,
+      "max_charging_power_kw": 120,
+      "availability_windows": [{"start_slot": 0, "end_slot": 12}],
+      "departure_slot": 12,
+      "priority": "critical"
+    },
+    {
+      "vehicle_id": "BUS-102",
+      "battery_capacity_kwh": 420,
+      "initial_energy_kwh": 180,
+      "target_energy_kwh": 320,
+      "minimum_energy_kwh": 100,
+      "max_charging_power_kw": 100,
+      "availability_windows": [{"start_slot": 4, "end_slot": 18}],
+      "departure_slot": 18,
+      "priority": "high"
+    },
+    {
+      "vehicle_id": "TRK-201",
+      "battery_capacity_kwh": 500,
+      "initial_energy_kwh": 160,
+      "target_energy_kwh": 410,
+      "minimum_energy_kwh": 120,
+      "max_charging_power_kw": 120,
+      "availability_windows": [{"start_slot": 8, "end_slot": 24}],
+      "departure_slot": 24,
+      "priority": "normal"
+    },
+    {
+      "vehicle_id": "TRK-202",
+      "battery_capacity_kwh": 500,
+      "initial_energy_kwh": 210,
+      "target_energy_kwh": 390,
+      "minimum_energy_kwh": 150,
+      "max_charging_power_kw": 80,
+      "availability_windows": [{"start_slot": 0, "end_slot": 24}],
+      "departure_slot": 24,
+      "priority": "low"
+    }
+  ],
+  "objective": {
+    "unmet_demand_penalty_per_kwh": 160,
+    "load_smoothing_penalty_per_kw_change": 0.2
+  },
+  "fleet_priority_rules": {
+    "critical_multiplier": 5.0,
+    "high_multiplier": 2.5,
+    "normal_multiplier": 1.0,
+    "low_multiplier": 0.75
+  }
+}
