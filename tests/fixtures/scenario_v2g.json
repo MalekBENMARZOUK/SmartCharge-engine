@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "scenario_name": "v2g_dispatch_test",
+    "description": "Scenario exercising bidirectional energy export."
+  },
+  "site": {
+    "site_id": "v2g-depot",
+    "time_step_minutes": 60,
+    "horizon_slots": 4,
+    "power_limit_kw": [50, 50, 50, 50],
+    "electricity_price_per_kwh": [0.08, 0.08, 0.08, 0.08],
+    "export_limit_kw": [40, 40, 40, 40],
+    "export_price_per_kwh": [0.05, 0.25, 0.25, 0.05]
+  },
+  "chargers": [
+    {"charger_id": "V2G-C1", "site_id": "v2g-depot", "max_power_kw": 40, "efficiency": 0.95}
+  ],
+  "vehicles": [
+    {
+      "vehicle_id": "V2G-BUS-1",
+      "battery_capacity_kwh": 250,
+      "initial_energy_kwh": 170,
+      "target_energy_kwh": 120,
+      "minimum_energy_kwh": 100,
+      "max_charging_power_kw": 40,
+      "v2g_enabled": true,
+      "max_discharging_power_kw": 40,
+      "discharge_efficiency": 0.95,
+      "availability_windows": [{"start_slot": 0, "end_slot": 4}],
+      "departure_slot": 4,
+      "priority": "normal"
+    }
+  ],
+  "objective": {
+    "unmet_demand_penalty_per_kwh": 500,
+    "load_smoothing_penalty_per_kw_change": 0.0,
+    "allow_vehicle_to_grid": true,
+    "battery_degradation_cost_per_kwh": 0.01
+  }
+}
