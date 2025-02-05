@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "scenario_name": "two-depot-network-plan",
+    "description": "Coordinated charging portfolio across two depots under a shared network power cap."
+  },
+  "sites": [
+    {
+      "site": {
+        "site_id": "north-depot",
+        "time_step_minutes": 30,
+        "horizon_slots": 12,
+        "power_limit_kw": [240, 240, 240, 240, 240, 240, 220, 220, 220, 220, 220, 220],
+        "electricity_price_per_kwh": [0.10, 0.10, 0.10, 0.11, 0.12, 0.12, 0.15, 0.15, 0.13, 0.12, 0.11, 0.10]
+      },
+      "chargers": [
+        {"charger_id": "N-DC-01", "site_id": "north-depot", "max_power_kw": 80, "efficiency": 0.95},
+        {"charger_id": "N-DC-02", "site_id": "north-depot", "max_power_kw": 80, "efficiency": 0.95},
+        {"charger_id": "N-DC-03", "site_id": "north-depot", "max_power_kw": 60, "efficiency": 0.94}
+      ],
+      "vehicles": [
+        {
+          "vehicle_id": "N-BUS-01",
+          "battery_capacity_kwh": 320,
+          "initial_energy_kwh": 120,
+          "target_energy_kwh": 210,
+          "minimum_energy_kwh": 90,
+          "max_charging_power_kw": 80,
+          "availability_windows": [{"start_slot": 0, "end_slot": 8}],
+          "departure_slot": 8,
+          "priority": "critical",
+          "compatible_charger_ids": ["N-DC-01", "N-DC-02"]
+        },
+        {
+          "vehicle_id": "N-TRK-02",
+          "battery_capacity_kwh": 420,
+          "initial_energy_kwh": 180,
+          "target_energy_kwh": 290,
+          "minimum_energy_kwh": 130,
+          "max_charging_power_kw": 60,
+          "availability_windows": [{"start_slot": 2, "end_slot": 12}],
+          "departure_slot": 12,
+          "priority": "high"
+        }
+      ],
+      "objective": {
+        "unmet_demand_penalty_per_kwh": 180,
+        "load_smoothing_penalty_per_kw_change": 0.15,
+        "site_demand_charge_per_kw": 0.18
+      }
+    },
+    {
+      "site": {
+        "site_id": "south-depot",
+        "time_step_minutes": 30,
+        "horizon_slots": 12,
+        "power_limit_kw": [210, 210, 210, 210, 210, 210, 190, 190, 190, 190, 190, 190],
+        "electricity_price_per_kwh": [0.09, 0.09, 0.10, 0.10, 0.11, 0.12, 0.16, 0.16, 0.14, 0.12, 0.11, 0.10]
+      },
+      "chargers": [
+        {"charger_id": "S-DC-01", "site_id": "south-depot", "max_power_kw": 70, "efficiency": 0.95},
+        {"charger_id": "S-DC-02", "site_id": "south-depot", "max_power_kw": 70, "efficiency": 0.95}
+      ],
+      "vehicles": [
+        {
+          "vehicle_id": "S-BUS-11",
+          "battery_capacity_kwh": 300,
+          "initial_energy_kwh": 100,
+          "target_energy_kwh": 200,
+          "minimum_energy_kwh": 80,
+          "max_charging_power_kw": 70,
+          "availability_windows": [{"start_slot": 0, "end_slot": 10}],
+          "departure_slot": 10,
+          "priority": "critical"
+        },
+        {
+          "vehicle_id": "S-TRK-21",
+          "battery_capacity_kwh": 380,
+          "initial_energy_kwh": 150,
+          "target_energy_kwh": 250,
+          "minimum_energy_kwh": 120,
+          "max_charging_power_kw": 70,
+          "availability_windows": [{"start_slot": 4, "end_slot": 12}],
+          "departure_slot": 12,
+          "priority": "normal"
+        }
+      ],
+      "objective": {
+        "unmet_demand_penalty_per_kwh": 180,
+        "load_smoothing_penalty_per_kw_change": 0.15,
+        "site_demand_charge_per_kw": 0.16
+      }
+    }
+  ],
+  "network": {
+    "power_limit_kw": [360, 360, 360, 360, 360, 360, 330, 330, 330, 330, 330, 330],
+    "demand_charge_per_kw": 0.22
+  }
+}

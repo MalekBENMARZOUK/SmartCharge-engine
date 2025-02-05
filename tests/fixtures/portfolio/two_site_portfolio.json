@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "scenario_name": "two-site-test-portfolio",
+    "description": "Coordinated two-depot portfolio for tests."
+  },
+  "sites": [
+    {
+      "site": {
+        "site_id": "depot-a",
+        "time_step_minutes": 30,
+        "horizon_slots": 6,
+        "power_limit_kw": [120, 120, 120, 120, 120, 120],
+        "electricity_price_per_kwh": [0.10, 0.10, 0.12, 0.13, 0.11, 0.11]
+      },
+      "chargers": [
+        {"charger_id": "A-C1", "site_id": "depot-a", "max_power_kw": 60, "efficiency": 0.95},
+        {"charger_id": "A-C2", "site_id": "depot-a", "max_power_kw": 60, "efficiency": 0.95}
+      ],
+      "vehicles": [
+        {
+          "vehicle_id": "A-BUS-1",
+          "battery_capacity_kwh": 300,
+          "initial_energy_kwh": 120,
+          "target_energy_kwh": 180,
+          "minimum_energy_kwh": 90,
+          "max_charging_power_kw": 60,
+          "availability_windows": [{"start_slot": 0, "end_slot": 4}],
+          "departure_slot": 4,
+          "priority": "critical",
+          "compatible_charger_ids": ["A-C1"]
+        }
+      ],
+      "objective": {
+        "unmet_demand_penalty_per_kwh": 180,
+        "load_smoothing_penalty_per_kw_change": 0.10,
+        "site_demand_charge_per_kw": 0.15
+      }
+    },
+    {
+      "site": {
+        "site_id": "depot-b",
+        "time_step_minutes": 30,
+        "horizon_slots": 6,
+        "power_limit_kw": [100, 100, 100, 100, 100, 100],
+        "electricity_price_per_kwh": [0.11, 0.11, 0.14, 0.15, 0.12, 0.12]
+      },
+      "chargers": [
+        {"charger_id": "B-C1", "site_id": "depot-b", "max_power_kw": 50, "efficiency": 0.94},
+        {"charger_id": "B-C2", "site_id": "depot-b", "max_power_kw": 50, "efficiency": 0.94}
+      ],
+      "vehicles": [
+        {
+          "vehicle_id": "B-TRUCK-1",
+          "battery_capacity_kwh": 320,
+          "initial_energy_kwh": 130,
+          "target_energy_kwh": 180,
+          "minimum_energy_kwh": 100,
+          "max_charging_power_kw": 50,
+          "availability_windows": [{"start_slot": 1, "end_slot": 6}],
+          "departure_slot": 6,
+          "priority": "high"
+        }
+      ],
+      "objective": {
+        "unmet_demand_penalty_per_kwh": 180,
+        "load_smoothing_penalty_per_kw_change": 0.10,
+        "site_demand_charge_per_kw": 0.12
+      }
+    }
+  ],
+  "network": {
+    "power_limit_kw": [150, 150, 150, 150, 150, 150],
+    "demand_charge_per_kw": 0.2
+  }
+}
