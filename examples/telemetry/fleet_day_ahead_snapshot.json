@@ -1,0 +1,31 @@
+{
+  "snapshot_id": "fleet-day-ahead-snapshot-01",
+  "current_slot": 8,
+  "vehicle_states": [
+    {
+      "vehicle_id": "BUS-101",
+      "observed_energy_kwh": 210,
+      "connected": true,
+      "connected_charger_id": "DC-01"
+    },
+    {
+      "vehicle_id": "BUS-102",
+      "observed_energy_kwh": 220,
+      "connected": true,
+      "connected_charger_id": "DC-03"
+    },
+    {
+      "vehicle_id": "TRK-201",
+      "observed_energy_kwh": 190,
+      "connected": true,
+      "connected_charger_id": "DC-04"
+    },
+    {
+      "vehicle_id": "TRK-202",
+      "observed_energy_kwh": 240,
+      "connected": false
+    }
+  ],
+  "power_limit_override_kw": [420, 420, 430, 430, 450, 450, 470, 470, 420, 420, 380, 380, 380, 380, 430, 430],
+  "electricity_price_override_per_kwh": [0.19, 0.19, 0.18, 0.17, 0.15, 0.14, 0.14, 0.15, 0.16, 0.17, 0.21, 0.22, 0.22, 0.18, 0.15, 0.13]
+}

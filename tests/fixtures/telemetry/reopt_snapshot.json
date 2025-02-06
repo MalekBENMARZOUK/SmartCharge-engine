@@ -1,0 +1,19 @@
+{
+  "snapshot_id": "reopt-snapshot-001",
+  "current_slot": 3,
+  "vehicle_states": [
+    {
+      "vehicle_id": "BUS-1",
+      "observed_energy_kwh": 150,
+      "connected": true,
+      "connected_charger_id": "C1"
+    },
+    {
+      "vehicle_id": "TRUCK-1",
+      "observed_energy_kwh": 150,
+      "connected": false
+    }
+  ],
+  "power_limit_override_kw": [100, 100, 120, 120, 120],
+  "electricity_price_override_per_kwh": [0.20, 0.18, 0.12, 0.11, 0.10]
+}
