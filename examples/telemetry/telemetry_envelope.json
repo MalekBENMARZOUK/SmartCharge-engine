@@ -1,0 +1,23 @@
+{
+  "envelope_id": "env-001",
+  "source": "broker.example",
+  "topic": "smart-charging.telemetry",
+  "received_at": "2026-03-18T10:00:00Z",
+  "telemetry": {
+    "snapshot_id": "broker-snapshot-001",
+    "current_slot": 2,
+    "vehicle_states": [
+      {
+        "vehicle_id": "BUS-1",
+        "observed_energy_kwh": 140,
+        "connected": true,
+        "connected_charger_id": "C1"
+      },
+      {
+        "vehicle_id": "TRUCK-1",
+        "observed_energy_kwh": 145,
+        "connected": false
+      }
+    ]
+  }
+}
