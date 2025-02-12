@@ -1,0 +1,35 @@
+services:
+  api:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      SCE_DEFAULT_SOLVER_TIME_LIMIT_SECONDS: "30"
+      SCE_STATE_REPOSITORY_BACKEND: "sql"
+      SCE_DATABASE_URL: "sqlite:////app/state/smart_charging.db"
+      SCE_LOG_FORMAT: "json"
+      SCE_MAX_REQUEST_BODY_BYTES: "10485760"
+      SCE_DATABASE_POOL_SIZE: "5"
+      SCE_GRACEFUL_SHUTDOWN_TIMEOUT_SECONDS: "30"
+    volumes:
+      - ./artifacts/state:/app/state
+    read_only: true
+    tmpfs:
+      - /tmp:size=100M
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: "2.0"
+        reservations:
+          memory: 512M
+          cpus: "0.5"
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
