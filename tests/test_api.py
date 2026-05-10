@@ -390,9 +390,11 @@ def test_request_body_limit_rejects_stream_without_content_length(
 
 
 def test_app_startup_reschedules_queued_jobs(
+    monkeypatch: pytest.MonkeyPatch,
     sql_settings: Path,
     fixture_scenario: ChargingScenario,
 ) -> None:
+    monkeypatch.setattr(settings, "job_process_isolation", False)
     job_service = OptimizationJobService(build_state_repository, process_isolation=False)
     job = job_service.create_solve_job(fixture_scenario)
 

@@ -29,7 +29,7 @@ from smart_charging_optimization_engine.services.job_worker import (
 from smart_charging_optimization_engine.services.run_tracking import OptimizationRunService
 from smart_charging_optimization_engine.storage.factory import repository_descriptor_from_settings
 from smart_charging_optimization_engine.storage.sql_repository import (
-    Session,
+    Session,  # pyright: ignore[reportAttributeAccessIssue]
     SqlAlchemyStateRepository,
     StoredDocument,
 )

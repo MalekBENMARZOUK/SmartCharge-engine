@@ -5,6 +5,7 @@ import contextlib
 import logging
 import signal
 from typing import TYPE_CHECKING
+from urllib.parse import urlparse, urlunparse
 
 import aio_pika
 
@@ -18,6 +19,19 @@ if TYPE_CHECKING:
     )
 
 logger = logging.getLogger(__name__)
+
+
+def _redact_broker_url(broker_url: str) -> str:
+    try:
+        parsed = urlparse(broker_url)
+        if parsed.username or parsed.password:
+            netloc = parsed.hostname or ""
+            if parsed.port:
+                netloc = f"{netloc}:{parsed.port}"
+            return urlunparse(parsed._replace(netloc=netloc))
+    except ValueError:
+        return "<invalid broker url>"
+    return broker_url
 
 
 class AmqpTelemetryConsumer:
@@ -38,7 +52,7 @@ class AmqpTelemetryConsumer:
     async def consume(self, max_messages: int | None = None) -> int:
         logger.info(
             "Connecting to telemetry broker %s queue=%s",
-            self._broker_url,
+            _redact_broker_url(self._broker_url),
             self._queue_name,
         )
         loop = asyncio.get_running_loop()
@@ -50,7 +64,7 @@ class AmqpTelemetryConsumer:
         except Exception:
             logger.exception(
                 "Failed to connect to telemetry broker %s",
-                self._broker_url,
+                _redact_broker_url(self._broker_url),
             )
             raise
         processed_messages = 0

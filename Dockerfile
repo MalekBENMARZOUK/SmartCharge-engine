@@ -21,7 +21,7 @@ FROM python:3.12-slim-bookworm AS runtime
 
 LABEL org.opencontainers.image.title="EV Fleet Charging Optimization Engine" \
       org.opencontainers.image.description="EV fleet charging optimization engine" \
-      org.opencontainers.image.source="https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine" \
+      org.opencontainers.image.source="https://github.com/MalekBENMARZOUK/SmartCharge-engine" \
       org.opencontainers.image.licenses="MIT"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -49,11 +49,8 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
 
-CMD ["uvicorn", "smart_charging_optimization_engine.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
-
 CMD ["uvicorn", "smart_charging_optimization_engine.api.app:app", \
      "--host", "0.0.0.0", "--port", "8000", \
-     "--workers", "2", \
      "--timeout-keep-alive", "65", \
      "--access-log", \
      "--limit-concurrency", "100"]

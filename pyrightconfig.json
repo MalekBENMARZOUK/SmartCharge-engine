@@ -1,7 +1,8 @@
 {
   "include": ["src", "tests", "benchmarks"],
   "extraPaths": ["src"],
-  "venvPath": ".",
   "pythonVersion": "3.11",
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
   "reportMissingTypeStubs": false
 }
