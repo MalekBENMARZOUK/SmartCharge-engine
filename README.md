@@ -6,7 +6,7 @@
 [![Pydantic v2](https://img.shields.io/badge/pydantic-v2-e92063?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
 [![Code style: Ruff](https://img.shields.io/badge/code%20style-ruff-261230?logo=ruff&logoColor=white)](https://docs.astral.sh/ruff/)
 
-A production-ready Python service for optimizing electric-vehicle fleet charging schedules. It minimises electricity costs while respecting grid limits, charger capacities, vehicle availability windows, and fleet priorities — and optionally earns revenue through Vehicle-to-Grid (V2G) export.
+An operations-oriented Python service for optimizing electric-vehicle fleet charging schedules. It minimises electricity costs while respecting grid limits, charger capacities, vehicle availability windows, and fleet priorities — and optionally earns revenue through Vehicle-to-Grid (V2G) export.
 
 ## Highlights
 
@@ -37,6 +37,7 @@ A production-ready Python service for optimizing electric-vehicle fleet charging
 - [Telemetry Ingestion](#telemetry-ingestion)
 - [Storage Backends](#storage-backends)
 - [Docker](#docker)
+- [Security & Operational Boundaries](#security--operational-boundaries)
 - [Development](#development)
 - [Examples](#examples)
 - [License](#license)
@@ -148,19 +149,16 @@ Start the server with `sce serve` (or `make run-api` for auto-reload).
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/scenarios` | Store a scenario |
-| `GET` | `/scenarios` | List stored scenarios (paginated) |
-| `GET` | `/scenarios/{id}` | Retrieve a scenario |
-| `POST` | `/portfolios` | Store a portfolio |
-| `GET` | `/portfolios` | List stored portfolios (paginated) |
-| `GET` | `/portfolios/{id}` | Retrieve a portfolio |
+| `POST` | `/storage/scenarios/{id}` | Store a scenario |
+| `GET` | `/storage/scenarios` | List stored scenarios (paginated) |
+| `GET` | `/storage/scenarios/{id}` | Retrieve a scenario |
 
 #### Telemetry
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/telemetry` | Ingest a telemetry snapshot |
-| `GET` | `/telemetry/{id}` | Retrieve a snapshot |
+| `POST` | `/storage/telemetry/{id}` | Store a telemetry snapshot |
+| `POST` | `/ingestion/telemetry-envelope` | Validate and ingest an AMQP-style telemetry envelope |
 
 #### Runs, Results & Jobs
 
@@ -168,13 +166,15 @@ Start the server with `sce serve` (or `make run-api` for auto-reload).
 |--------|------|-------------|
 | `GET` | `/runs` | List optimisation runs (paginated) |
 | `GET` | `/runs/{id}` | Get run (metadata + result) |
+| `GET` | `/runs/compare` | Compare two stored runs |
 | `DELETE` | `/runs/{id}` | Delete a run |
-| `GET` | `/results/{id}` | Retrieve single-site result |
-| `GET` | `/results/multisite/{id}` | Retrieve multi-site result |
-| `DELETE` | `/results/{id}` | Delete a result |
-| `POST` | `/jobs` | Create an async optimisation job |
 | `GET` | `/jobs` | List jobs (paginated) |
+| `POST` | `/jobs/solve` | Create an async single-site optimisation job |
+| `POST` | `/jobs/reoptimize` | Create an async rolling-horizon job |
+| `POST` | `/jobs/solve/multisite` | Create an async multi-site optimisation job |
+| `POST` | `/jobs/recover-stale` | Recover stale jobs and optionally reschedule them |
 | `GET` | `/jobs/{id}` | Job details + status |
+| `POST` | `/jobs/{id}/retry` | Retry a failed or timed-out job |
 | `DELETE` | `/jobs/{id}` | Cancel / delete a job |
 
 All endpoints accept an optional `X-Request-ID` header for distributed tracing.
@@ -183,10 +183,10 @@ All endpoints accept an optional `X-Request-ID` header for distributed tracing.
 
 ```python
 from smart_charging_optimization_engine.io.json_io import load_scenario
-from smart_charging_optimization_engine.optimization.engine import OptimizationEngine
+from smart_charging_optimization_engine.optimization.engine import SmartChargingOptimizer
 
 scenario = load_scenario("examples/fleet_day_ahead.json")
-engine = OptimizationEngine()
+engine = SmartChargingOptimizer()
 result = engine.solve(scenario)
 
 print(result.status)                    # SolverStatus.OPTIMAL
@@ -308,7 +308,7 @@ The `POST /reoptimize` endpoint (or `sce reoptimize` CLI) adapts a running sched
 
 Real-time fleet state can be pushed via:
 
-- **HTTP** — `POST /telemetry` with a `TelemetrySnapshot` payload
+- **HTTP** — `POST /storage/telemetry/{id}` with a `TelemetrySnapshot` payload
 - **AMQP** — publish a `TelemetryMessageEnvelope` to the configured RabbitMQ queue
 
 The `AmqpTelemetryConsumer` runs as a long-lived process, consuming messages, validating them, persisting snapshots, and updating metrics.
@@ -335,6 +335,24 @@ The Compose stack runs the API on `127.0.0.1:8000` with:
 - Built-in health check on `/health`
 - 30 s graceful shutdown
 
+## Security & Operational Boundaries
+
+This repository focuses on optimization, API ergonomics, persistence, and deployability. It does not implement built-in authentication or tenant-level authorization. If the API is exposed outside a trusted development or internal network, put it behind an authenticated gateway, reverse proxy, or service mesh policy.
+
+Operational defaults are deliberately conservative: Compose binds the API to `127.0.0.1`, CORS is disabled unless `SCE_CORS_ALLOWED_ORIGINS` is configured, request bodies are capped by `SCE_MAX_REQUEST_BODY_BYTES`, and broker URLs are redacted in telemetry consumer logs. Treat `.env` files, database URLs, and AMQP credentials as deployment secrets and keep them out of Git.
+
+The background job runner is designed for a single API worker in this demo deployment. For horizontally scaled API processes, use an external queue or a database-backed locking strategy before increasing the Uvicorn worker count.
+
+## Development
+
+```bash
+make install
+make lint
+make test
+make benchmark
+```
+
+Quality gates include Ruff linting and format checks, MyPy strict mode, Pyright, pytest, coverage, and a Docker image smoke test in GitHub Actions.
 
 ## Examples
 

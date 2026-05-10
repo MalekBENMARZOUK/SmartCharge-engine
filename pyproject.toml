@@ -49,11 +49,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine"
-Documentation = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine#readme"
-Repository = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine"
-Issues = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine/issues"
-Source = "https://github.com/MalekBENMARZOUK/EV_fleet_charging_optimisation_engine"
+Homepage = "https://github.com/MalekBENMARZOUK/SmartCharge-engine"
+Documentation = "https://github.com/MalekBENMARZOUK/SmartCharge-engine#readme"
+Repository = "https://github.com/MalekBENMARZOUK/SmartCharge-engine"
+Issues = "https://github.com/MalekBENMARZOUK/SmartCharge-engine/issues"
+Source = "https://github.com/MalekBENMARZOUK/SmartCharge-engine"
 
 [project.optional-dependencies]
 dev = [

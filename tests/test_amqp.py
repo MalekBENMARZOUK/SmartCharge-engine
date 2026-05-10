@@ -3,7 +3,10 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING, cast
 
-from smart_charging_optimization_engine.messaging.amqp import AmqpTelemetryConsumer
+from smart_charging_optimization_engine.messaging.amqp import (
+    AmqpTelemetryConsumer,
+    _redact_broker_url,
+)
 from smart_charging_optimization_engine.services.telemetry_ingestion import (
     TelemetryIngestionService,
 )
@@ -12,6 +15,12 @@ if TYPE_CHECKING:
     import pytest
 
     from smart_charging_optimization_engine.storage.base import StateRepository
+
+
+def test_redact_broker_url_removes_credentials() -> None:
+    assert _redact_broker_url("amqp://user:secret@broker.local:5672/vhost") == (
+        "amqp://broker.local:5672/vhost"
+    )
 
 
 class _FakeQueueIterator:
